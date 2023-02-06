@@ -72,7 +72,7 @@ onMounted(() => {
   axios.get("http://localhost:9090/users-info-entity/getUserInfoById/" + adm_id.value).then(res => {
     mechanism_id.value = res.data.userMechanism
     adm_name.value = res.data.userName
-    one_url.value = "/orgInfoManage/" + mechanism_id.value
+    one_url.value = "/orgInfoManage/" + mechanism_id.value + "/" + adm_id.value
     two_url.value = "/stuInfoManage/" + mechanism_id.value
     three_url.value = "/orgTrainingManage/" + mechanism_id.value+"/"+adm_id.value
   })

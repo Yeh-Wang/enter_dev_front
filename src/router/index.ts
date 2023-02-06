@@ -13,7 +13,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../views/OrgAdmView.vue'),
         children: [
             {
-                path: '/orgInfoManage/:id',
+                path: '/orgInfoManage/:id/:adm_id',
                 name: 'organization_info_manage',
                 component: () => import('../components/orgInfoManage.vue')
             },
@@ -28,7 +28,7 @@ const routes: Array<RouteRecordRaw> = [
                 component: () => import('../components/orgTrainingManage.vue')
             },
             {
-                path: '/planResourceConf/:id',
+                path: '/planResourceConf/:id/:adm_id',
                 name: 'plan_resource_conf',
                 component: () => import('../components/planResourceConf.vue'),
             }

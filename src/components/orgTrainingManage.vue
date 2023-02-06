@@ -133,7 +133,7 @@ interface trainInfo {
   trainPeriod: number,
   startTime: string,
   endTime: string,
-  trainStatus: boolean
+  trainStatus: string
 }
 
 const options = Array.from({length: 100}).map((_, idx) => ({
@@ -155,7 +155,7 @@ const addForm: trainInfo = reactive({
   trainPeriod: 4,
   startTime: "2000-02-02 00:00:00",
   endTime: "2000-02-02 00:00:00",
-  trainStatus: false
+  trainStatus: ""
 })
 const addClose = () => {
   centerAddDialogVisible.value = false
@@ -216,7 +216,7 @@ const deleteMakeSure = () => {
 }
 
 const toDetail = (index:number) =>{
-  router.push({path:'/planResourceConf/'+index})
+  router.push({path:'/planResourceConf/'+index+"/"+adm_id.value})
 }
 onMounted(() => {
   mechanism_id.value = route.params.id

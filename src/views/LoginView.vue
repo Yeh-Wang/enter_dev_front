@@ -71,7 +71,7 @@ export default defineComponent({
     }
   },
   mounted(){
-    this.$router.push({path:'/orgAdm/'+2})
+    // this.$router.push({path:'/orgAdm/'+2})
   }
 });
 </script>

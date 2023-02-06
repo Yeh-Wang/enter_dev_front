@@ -1,7 +1,7 @@
 <template>
   <el-row>
-    <el-col :span="21"/>
-    <el-col :span="3">
+    <el-col :span="20"/>
+    <el-col :span="4">
       <el-tooltip
           class="box-item"
           effect="dark"
@@ -21,10 +21,18 @@
       <el-tooltip
           class="box-item"
           effect="dark"
-          content="import Info from excel"
+          content="export users learn info"
           placement="top"
       >
-        <el-button type="primary" size="default" @click="importUsersInfo" circle icon="BottomLeft"/>
+        <el-button type="success" size="default" @click="exportUsersLearnInfo" circle icon="TopRight"/>
+      </el-tooltip>
+      <el-tooltip
+          class="box-item"
+          effect="dark"
+          content="The learning status of all students"
+          placement="top"
+      >
+        <el-button type="success" size="default" @click="viewLearnSpace" circle icon="GoldMedal"/>
       </el-tooltip>
     </el-col>
   </el-row>
@@ -130,7 +138,28 @@
       </el-form-item>
     </el-form>
   </el-dialog>
-
+<!--      学习情况-->
+  <el-dialog
+      v-model="centerLearnDialogVisible"
+      align-center
+  >
+    <el-table :data="filterLearnTableData" height="550" stripe :cell-style="{border:'1px solid var(--el-border-color)'}"
+              style="width: 100%">
+      <el-table-column label="用户编号" prop="userId" width="40"/>
+      <el-table-column label="姓名" prop="realName"/>
+      <el-table-column label="试卷编号" prop="examPaperId" width="40"/>
+      <el-table-column label="是否完成考试" prop="isComplete"/>
+      <el-table-column label="分数" prop="score" width="40"/>
+      <el-table-column label="是否完成计划" prop="planStatus"/>
+      <el-table-column label="视频编号" prop="videoId" width="40"/>
+      <el-table-column label="视频断点" prop="videBreakpoint" width="80"/>
+      <el-table-column align="right">
+        <template #header>
+          <el-input v-model="searchLearn" size="small" placeholder="Type to search"/>
+        </template>
+      </el-table-column>
+    </el-table>
+  </el-dialog>
 
   <el-table :data="filterTableData" height="550" stripe :cell-style="{border:'1px solid var(--el-border-color)'}"
             style="width: 100%">
@@ -170,20 +199,33 @@ import axios from "axios";
 import {ElMessage} from "element-plus";
 import {ExcelService} from "@/exportToExcel"
 
-//导出数据
+//导出学员信息数据
 const exportUsersInfo = () => {
-  const titleArr = ['用户编号', '用户等级', '所属机构', '姓名', '用户名', '密码', '性别', '年龄', '联系电话', '地址']//表头中文名
+  const titleArr = ['用户编号', '用户权限等级','所属机构编号', '姓名', '用户名', '密码', '性别', '年龄', '联系电话', '地址']//表头中文名
   const s = new ExcelService();
-  s.exportAsExcelFile(allUserInfo, "test", titleArr, "sheetName")
+  s.exportAsExcelFile(allUserInfo, "学员信息", titleArr, "sheetName")
 }
-//导入数据
-const importUsersInfo = () =>{
-  ElMessage({
-    message:"I can't complete it!",
-    type:"error"
-  })
+//查看并导出学习情况
+const centerLearnDialogVisible = ref(false)
+const viewLearnSpace = () =>{
+  centerLearnDialogVisible.value=true
+}
+const exportUsersLearnInfo = () =>{
+  const titleArr1 = ['用户编号','用户权限等级','用户机构编号', '姓名', '是否完成考试', '试卷编号', '分数', '视频编号', '视频断点', '是否完成计划']//表头中文名
+  const s1 = new ExcelService();
+  s1.exportAsExcelFile(allLearnInfo, "学员学习情况", titleArr1, "sheetName")
 }
 
+//学习情况
+const allLearnInfo: usersLearnInfo[] =reactive([])
+const searchLearn = ref('')
+const filterLearnTableData = computed(() =>
+    allLearnInfo.filter(
+        (data) =>
+            !searchLearn.value ||
+            data.realName.toLowerCase().includes(searchLearn.value.toLowerCase())
+    )
+)
 
 interface usersInfo {
   userId: number;
@@ -196,6 +238,18 @@ interface usersInfo {
   userAge: string;
   userPhone: string;
   userAddress: string;
+}
+interface usersLearnInfo{
+  userId: number;
+  userGrade: number;
+  userMechanism: number;
+  realName: string;
+  isComplete:string;
+  examPaperId:number;
+  score:number;
+  planStatus:string;
+  videoId:number;
+  videoBreakpoint:string
 }
 
 const options = Array.from({length: 100}).map((_, idx) => ({
@@ -337,6 +391,10 @@ onMounted(() => {
   mechanism_id.value = route.params.id
   axios.get("http://localhost:9090/users-info-entity/getUsersInfoByOrgId/" + mechanism_id.value + ',' + 2).then(res => {
     allUserInfo.push(...res.data)
+  })
+  allLearnInfo.splice(0,allLearnInfo.length)
+  axios.get("http://localhost:9090/users-info-entity/getUsersAllInfoByOrgId/" + mechanism_id.value + ',' + 2).then(res=>{
+    allLearnInfo.push(...res.data)
   })
 })
 </script>
