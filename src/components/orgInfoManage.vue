@@ -7,6 +7,8 @@
         <el-button size="default" @click="one_url">机构信息</el-button>
         <el-divider direction="vertical"/>
         <el-button size="default" @click="three_url">机构管理员信息</el-button>
+<!--        <el-divider direction="vertical"/>-->
+<!--        <el-button size="default" @click="two_url">机构资源管理</el-button>-->
       </el-col>
       <el-col :span="4"/>
       <el-col :span="2"/>
@@ -258,13 +260,18 @@ const updateForm: userInfo = reactive({
 })
 const showUpdate = () => {
   centerUpdateDialogVisible.value = true
-  let updateIndex_1 = allUserInfo.findIndex((user) => {
-    return user.userId === adm_id.value
-  })
-  console.log(updateIndex_1)
-  updateForm.userId = allUserInfo[updateIndex_1+1].userId;updateForm.userMechanism = allUserInfo[updateIndex_1+1].userMechanism;updateForm.userGrade = allUserInfo[updateIndex_1+1].userGrade
-  updateForm.realName=allUserInfo[updateIndex_1+1].realName;updateForm.userSexy=allUserInfo[updateIndex_1+1].userSexy;updateForm.userAge=allUserInfo[updateIndex_1+1].userAge;updateForm.userName=allUserInfo[updateIndex_1+1].userName;
-  updateForm.userPwd=allUserInfo[updateIndex_1+1].userPwd;updateForm.userPhone=allUserInfo[updateIndex_1+1].userPhone;updateForm.userAddress=allUserInfo[updateIndex_1+1].userAddress
+  let id = ref(999)
+  id.value=adm_id.value
+  let updateIndex_1 = ref(999)
+  for(let i=0;i<allUserInfo.length;i++){
+    if(allUserInfo[i].userId == id.value){
+      updateIndex_1.value = i;
+      break;
+    }
+  }
+  updateForm.userId = allUserInfo[updateIndex_1.value].userId;updateForm.userMechanism = allUserInfo[updateIndex_1.value].userMechanism;updateForm.userGrade = allUserInfo[updateIndex_1.value].userGrade
+  updateForm.realName=allUserInfo[updateIndex_1.value].realName;updateForm.userSexy=allUserInfo[updateIndex_1.value].userSexy;updateForm.userAge=allUserInfo[updateIndex_1.value].userAge;updateForm.userName=allUserInfo[updateIndex_1.value].userName;
+  updateForm.userPwd=allUserInfo[updateIndex_1.value].userPwd;updateForm.userPhone=allUserInfo[updateIndex_1.value].userPhone;updateForm.userAddress=allUserInfo[updateIndex_1.value].userAddress
 }
 const onSubmitUpdate = () => {
   axios.post("http://localhost:9090/users-info-entity/updateUserInfo", updateForm).then(res => {

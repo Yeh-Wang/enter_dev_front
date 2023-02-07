@@ -107,8 +107,25 @@
             <div style="height: 100px;">
               <p style="border-top: 1px solid #efecec;font-size: small; word-wrap: break-word">{{ trainInfo.trainIntroduce }}</p>
             </div>
-            <div class="footBtb">
+            <div class="footBtb" v-if="trainInfo.trainStatus==='进行中'">
+              <el-tooltip
+                  class="box-item"
+                  effect="light"
+                  content="计划进行中,点击查看"
+                  placement="top"
+              >
               <el-button text type="success" size="default" @click="toDetail(trainInfo.id)">查看详情</el-button>
+              </el-tooltip>
+            </div>
+            <div class="footBtb" v-else>
+              <el-tooltip
+                  class="box-item"
+                  effect="light"
+                  content="计划已结束"
+                  placement="top"
+              >
+                <el-button text type="success" size="default" @click="toDetail(trainInfo.id)">查看详情</el-button>
+              </el-tooltip>
             </div>
           </el-card>
         </el-space>
@@ -135,6 +152,8 @@ interface trainInfo {
   endTime: string,
   trainStatus: string
 }
+
+const planTips = ref("进行中")
 
 const options = Array.from({length: 100}).map((_, idx) => ({
   value: `${idx + 1}`,
